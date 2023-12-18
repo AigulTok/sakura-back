@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  sakura-back:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=${EXPRESS_PORT}
+      - CORS_ORIGIN=${FRONTEND_URL}
+      - DB_URL=${DB_URL}
+      - DB_LOGS=${DB_LOGS}
+      - REDIS_URL=${REDIS_URL}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+
+  caddy:
+    image: caddy/caddy:2.7.3-alpine
+    container_name: caddy-server
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
+  postgres:
+    image: postgres:15.0
+    environment:
+      POSTGRES_DB: "dev"
+      POSTGRES_USER: "dev"
+      POSTGRES_PASSWORD: "localpass"
+    container_name: "sakura-postgres"
+    ports:
+      - "5400:5432"
+
+volumes:
+  caddy_data:
+  caddy_config:
