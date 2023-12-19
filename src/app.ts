@@ -13,7 +13,9 @@ import swaggerDocs from "./clients/swagger";
 
 const PORT = process.env.EXPRESS_PORT || 5000;
 const HOST = process.env.HOST || "0.0.0.0";
-const CORS_ORIGIN = process.env.FRONTEND_URL || "http://localhost:3000";
+const CORS_ORIGIN =
+  process.env.FRONTEND_URL ||
+  "https://sakura-front-git-notifications-barresis-team.vercel.app/";
 
 async function main() {
   const app = express();
@@ -31,11 +33,11 @@ async function main() {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.get("/healthcheck", () => {
-    return {
+  app.get("/healthcheck", (req, res) => {
+    res.json({
       status: "ok",
       port: PORT,
-    };
+    });
   });
 
   app.use(preMiddlewares());
@@ -50,7 +52,7 @@ async function main() {
   server.listen({ port: PORT, host: HOST });
   Logger.instance.info("\\|/ Sakura API is ready \\|/");
 
-  swaggerDocs(app, Number(PORT));
+  swaggerDocs(app, HOST, Number(PORT));
 }
 
 main();

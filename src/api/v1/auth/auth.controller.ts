@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { genSalt, hash, compare } from "bcrypt";
+import { genSalt, hash, compare } from "bcryptjs";
 import { signup as validateSignup } from "./auth.validation";
 import User from "../../../data/user";
 import {
